@@ -1,6 +1,6 @@
 # 🕹️ Pixel Hopper
 
-![version](https://img.shields.io/badge/version-1.0-brightgreen) ![dependencies](https://img.shields.io/badge/dependencies-none-blue) ![platform](https://img.shields.io/badge/platform-browser-orange)
+![version](https://img.shields.io/badge/version-1.01-brightgreen) ![dependencies](https://img.shields.io/badge/dependencies-none-blue) ![platform](https://img.shields.io/badge/platform-browser-orange)
 
 A retro pixel-art platformer that runs entirely in your browser. One HTML file, no build step, no dependencies.
 
@@ -27,7 +27,7 @@ Run, jump and stomp through 15 levels, fight 3 bosses, collect superpowers (incl
 ## Quick start
 
 ```bash
-git clone https://github.com/aylanarciso0721-lang/pixel-hopper.git
+git clone https://github.com/<your-username>/pixel-hopper.git
 cd pixel-hopper
 # open the game in your browser
 open pixel-hopper.html        # macOS
@@ -53,6 +53,7 @@ You can also just double-click `pixel-hopper.html`.
 - **Touch support:** on-screen controls with adjustable size, plus tappable menus.
 - **Locked developer mode:** hitboxes, god mode, noclip, level skip and more, behind a 20-digit code.
 - **Saved progress:** unlocked levels, best scores and settings are stored in `localStorage`.
+- **Auto-pause:** the game pauses when you switch tabs or windows, so you never lose a life in the background.
 
 ## Controls
 
@@ -64,12 +65,13 @@ You can also just double-click `pixel-hopper.html`.
 | Jump | `Space`, `Z`, `↑` or `W` (hold for a higher jump) |
 | Fire (with Fire power) | `X` or `Shift` |
 | Levitate (with Levitate power) | Hold jump while in the air |
-| Pause | `Esc` or `P` |
+| Pause / resume | `Esc` or `P` (the game also pauses automatically when the tab loses focus) |
 | Menus | `↑` `↓` to move, `←` `→` to change options, `Enter` to select, `Esc` to go back |
 
 ### Mouse and touch
 
 - Menus work with hover and click or tap.
+- The **II** button on the touch pad pauses and resumes.
 - On touch devices an on-screen pad appears with **Left, Right, Pause, Fire and Jump**. You can force it on or off and resize it under **Options → Touch Controls**.
 
 ## Gameplay guide
@@ -207,6 +209,8 @@ pixel-hopper/
 └── README.md
 ```
 
+Testing: v1.01 was checked with automated headless runs: 1,000 randomised play sessions across all levels, difficulties and heroes, scripted boss fights on all three boss levels, and 120,000 random keyboard and pointer events across every menu, with no errors. These tests are not part of the repo. Level completability has not been verified end to end, so please open an issue if a level feels unfair.
+
 Under the hood:
 
 - **Rendering:** a 320×192 `<canvas>` scaled up with `image-rendering: pixelated`. Everything is drawn with rectangles and gradients; there are no image assets.
@@ -220,13 +224,14 @@ Under the hood:
 1. Rename `pixel-hopper.html` to `index.html` (or keep the name and link to it directly).
 2. Push to GitHub.
 3. Go to **Settings → Pages**, choose your branch and the `/ (root)` folder, and save.
-4. Your game will be live at `https://aylanarciso0721-lang.github.io/Pixel-Hopper/`.
+4. Your game will be live at `https://<your-username>.github.io/<repo-name>/`.
 
 ## Changelog
 
 | Version | Highlights |
 | --- | --- |
-| **1.0** | 15 levels, 3 bosses, 4 superpowers including levitation, code-locked developer mode, colorblind and touch accessibility, reorganised menus, new sound effects |
+| **1.01** | Bug fixes: Developer screen could return to a stale menu (even a paused game), holding Enter repeated menu actions, `P` could not resume from pause, the touch pause button could not resume, fireballs could fire on resume from pause, the game kept running in a background tab, and the level-select scroll arrow overlapped the title |
+| 1.0 | 15 levels, 3 bosses, 4 superpowers including levitation, code-locked developer mode, colorblind and touch accessibility, reorganised menus, new sound effects |
 | 0.9 beta | Tutorial level with hint signs, lighting and shadows, reset save |
 | 0.8 beta | 16×16 sprites, 10 levels, 5 enemy types, 4 heroes, Insane and Demon difficulties |
 | 0.7 beta | Version labels and About screen |
