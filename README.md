@@ -1,6 +1,6 @@
-# 🕹️ Pixel Hopper
+ 🕹️ Pixel Hopper
 
-![version](https://img.shields.io/badge/version-1.01-brightgreen) ![dependencies](https://img.shields.io/badge/dependencies-none-blue) ![platform](https://img.shields.io/badge/platform-browser-orange)
+![version](https://img.shields.io/badge/version-1.02-brightgreen) ![dependencies](https://img.shields.io/badge/dependencies-none-blue) ![platform](https://img.shields.io/badge/platform-browser-orange)
 
 A retro pixel-art platformer that runs entirely in your browser. One HTML file, no build step, no dependencies.
 
@@ -19,6 +19,7 @@ Run, jump and stomp through 15 levels, fight 3 bosses, collect superpowers (incl
 - [Options and accessibility](#options-and-accessibility)
 - [Developer mode](#developer-mode)
 - [Project structure](#project-structure)
+- [Debugging and tests](#debugging-and-tests)
 - [Hosting on GitHub Pages](#hosting-on-github-pages)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
@@ -53,6 +54,7 @@ You can also just double-click `pixel-hopper.html`.
 - **Touch support:** on-screen controls with adjustable size, plus tappable menus.
 - **Locked developer mode:** hitboxes, god mode, noclip, level skip and more, behind a 20-digit code.
 - **Saved progress:** unlocked levels, best scores and settings are stored in `localStorage`.
+- **Robust by design:** a runtime error is caught and logged instead of freezing the game, and corrupted or outdated save data is repaired on load.
 - **Auto-pause:** the game pauses when you switch tabs or windows, so you never lose a life in the background.
 
 ## Controls
@@ -186,6 +188,7 @@ Unlocked features:
 | `[` / `]` | Slow down / speed up time |
 | `1`–`4` | Grant Levitate, Shield, Fire, Star |
 | `K` | Defeat the boss instantly |
+| `L` | Show the recent event log on screen |
 
 It also shows a debug panel (version, FPS, position, velocity) and unlocks every level in Level Select.
 
@@ -205,11 +208,28 @@ console.log(hs('your20digitcodehere'));
 
 ```
 pixel-hopper/
-├── pixel-hopper.html   # the whole game: HTML, CSS and JavaScript
+├── pixel-hopper.html     # the whole game: HTML, CSS and JavaScript
+├── tests/
+│   └── run-tests.js      # headless test runner (Node, no dependencies)
 └── README.md
 ```
 
-Testing: v1.01 was checked with automated headless runs: 1,000 randomised play sessions across all levels, difficulties and heroes, scripted boss fights on all three boss levels, and 120,000 random keyboard and pointer events across every menu, with no errors. These tests are not part of the repo. Level completability has not been verified end to end, so please open an issue if a level feels unfair.
+The script inside `pixel-hopper.html` is organised into labelled sections, in this order:
+
+| Section | Contents |
+| --- | --- |
+| `CONFIG` | Canvas size, difficulties, heroes, bosses, power-ups, color filters, secret-code hash |
+| `LEVELS` | Hand-built levels, the seeded level generator, the tutorial |
+| `SAVE + GAME STATE` | Settings, progress, global state |
+| `DEBUG` | Event log, invariant checks, error recovery, save sanitising |
+| `AUDIO` | Sound effects and music |
+| `PHYSICS + GAME RULES` | Collision, damage, bosses, level loading, scoring |
+| `UPDATE` | The fixed 60 Hz `step()` function |
+| `MENUS` | Every menu screen as data |
+| `RENDERING` | All drawing code |
+| `INPUT` | Keyboard, pointer and touch handlers |
+| `MAIN LOOP` | Frame loop with error recovery |
+| `DEBUG API` | The read-only `PH` object used by the console and the tests |
 
 Under the hood:
 
@@ -218,6 +238,42 @@ Under the hood:
 - **Levels:** a few are hand-authored from tile data. The rest come from a seeded generator, so they are identical on every playthrough.
 - **Audio:** oscillator-based sound effects and a looping chiptune melody (Web Audio).
 - **Saves:** `localStorage` under the key `pxh1`.
+
+## Debugging and tests
+
+### In the browser
+
+Open the developer console and use the read-only `PH` object:
+
+| Command | What it does |
+| --- | --- |
+| `PH.log()` | The last 200 game events (level loads, deaths, power-ups, boss hits, errors) |
+| `PH.state()` | A snapshot of the scene, level, lives, player position and boss health |
+| `PH.inv()` | Checks game invariants (NaN values, player out of bounds or inside a wall) and returns any problems |
+| `PH.errors()` | The last caught runtime error |
+
+With developer mode unlocked, press `L` in a level to show the event log on screen. Invariants are also checked automatically in developer mode.
+
+### Automated tests
+
+```bash
+node tests/run-tests.js              # tests ../pixel-hopper.html
+node tests/run-tests.js path/to.html # tests another build
+```
+
+Requires Node 18 or newer. The runner loads the game headlessly with a fake canvas and checks:
+
+1. **Level validation:** gaps are at most 3 tiles, platforms, coins and orbs are within jump reach, nothing spawns inside walls or on spikes, spawn points and flags sit on solid ground.
+2. **1,000 randomised play sessions** across all levels, difficulties and heroes, checking invariants every frame.
+3. **Scripted boss fights** on all three boss levels, including clearing the level afterwards.
+4. **Every menu item** is activated and every screen is drawn.
+5. **The secret code:** wrong codes are rejected and the right one is accepted.
+6. **120,000 random keyboard and pointer events**, with developer mode locked and unlocked.
+7. **Corrupted save data** is repaired.
+8. **Render errors** do not stop the main loop.
+9. **Every hero on every difficulty** can clear a 3-tile gap with a last-moment jump.
+
+The runner exits with a non-zero code on failure, so it works in CI. It does not prove that every level is completable end to end, since there is no full pathfinding solver. Please open an issue if a level feels unfair.
 
 ## Hosting on GitHub Pages
 
@@ -230,7 +286,8 @@ Under the hood:
 
 | Version | Highlights |
 | --- | --- |
-| **1.01** | Bug fixes: Developer screen could return to a stale menu (even a paused game), holding Enter repeated menu actions, `P` could not resume from pause, the touch pause button could not resume, fireballs could fire on resume from pause, the game kept running in a background tab, and the level-select scroll arrow overlapped the title |
+| **1.02** | Deep bug-fix and code-organisation update: **Demon difficulty could not jump** (fixed), main loop could freeze permanently after an error (now recovers), corrupted saves could crash startup (now repaired), screen shake and toast timing depended on monitor refresh rate, long level names overlapped the HUD, two unreachable platforms in Neon Citadel and nine enemies placed on spikes in generated levels, the developer level-skip could enter the tutorial. Code is now split into labelled sections with a `PH` debug API, an event log and a test runner |
+| 1.01 | Bug fixes: Developer screen could return to a stale menu (even a paused game), holding Enter repeated menu actions, `P` could not resume from pause, the touch pause button could not resume, fireballs could fire on resume from pause, the game kept running in a background tab, and the level-select scroll arrow overlapped the title |
 | 1.0 | 15 levels, 3 bosses, 4 superpowers including levitation, code-locked developer mode, colorblind and touch accessibility, reorganised menus, new sound effects |
 | 0.9 beta | Tutorial level with hint signs, lighting and shadows, reset save |
 | 0.8 beta | 16×16 sprites, 10 levels, 5 enemy types, 4 heroes, Insane and Demon difficulties |
