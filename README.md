@@ -1,6 +1,6 @@
- 🕹️ Pixel Hopper
+# 🕹️ Pixel Hopper
 
-![version](https://img.shields.io/badge/version-1.02-brightgreen) ![dependencies](https://img.shields.io/badge/dependencies-none-blue) ![platform](https://img.shields.io/badge/platform-browser-orange)
+![version](https://img.shields.io/badge/version-1.1-brightgreen) ![dependencies](https://img.shields.io/badge/dependencies-none-blue) ![platform](https://img.shields.io/badge/platform-browser-orange)
 
 A retro pixel-art platformer that runs entirely in your browser. One HTML file, no build step, no dependencies.
 
@@ -16,6 +16,7 @@ Run, jump and stomp through 15 levels, fight 3 bosses, collect superpowers (incl
 - [Features](#features)
 - [Controls](#controls)
 - [Gameplay guide](#gameplay-guide)
+- [Shop: outfits and upgrades](#shop-outfits-and-upgrades)
 - [Options and accessibility](#options-and-accessibility)
 - [Developer mode](#developer-mode)
 - [Project structure](#project-structure)
@@ -47,6 +48,7 @@ You can also just double-click `pixel-hopper.html`.
 - **5 enemy types:** Walker, Hopper, Bat, Spiny and Ghost.
 - **4 superpowers** you collect from glowing orbs: Levitate, Shield, Fire and Star.
 - **4 playable heroes** with different strengths.
+- **Shop:** bank the coins you collect, then buy 6 outfits and 5 permanent upgrades.
 - **5 difficulty levels:** Easy, Normal, Hard, Insane and Demon.
 - **Retro look with lighting:** 16×16 sprites on a 320×192 canvas, gradient skies, parallax hills, shadows, ambient particles, optional CRT scanlines and vignette.
 - **Chiptune music and sound effects** generated with the Web Audio API (no audio files).
@@ -156,9 +158,47 @@ Bosses chase you, jump and shoot projectiles, and speed up as they take damage. 
 
 New players should start with **Play → Tutorial**.
 
+## Shop: outfits and upgrades
+
+Coins you collect are **banked when you clear a level**. Dying loses that attempt's coins, and the tutorial pays nothing. Harder difficulties pay more:
+
+| Difficulty | Easy | Normal | Hard | Insane | Demon |
+| --- | :---: | :---: | :---: | :---: | :---: |
+| Coin payout | ×1 | ×1 | ×1.25 | ×1.5 | ×2 |
+
+Open the shop from the title screen. Your wallet, outfits and upgrades are saved with your progress.
+
+### Outfits (cosmetic)
+
+Outfits work with every hero and change how your character looks, including in the shop preview.
+
+| Outfit | Price | Look |
+| --- | :---: | --- |
+| Classic | Free | Your hero's own colors |
+| Ninja | 30 | Dark suit, mask and red headband |
+| Knight | 60 | Steel armor with a red plume |
+| Wizard | 100 | Purple robe and a pointed star hat |
+| Astronaut | 150 | White helmet with a glass visor |
+| Royal | 220 | Gold crown |
+| Ghost | 300 | Translucent white |
+
+### Upgrades (permanent)
+
+The price of each level is the base price × the level you are buying (for example Extra Life costs 50, then 100, then 150).
+
+| Upgrade | Max level | Base price | Effect |
+| --- | :---: | :---: | --- |
+| Extra Life | 3 | 50 | +1 life in every level |
+| Super Jump | 3 | 40 | +4% jump height per level |
+| Power Time | 3 | 60 | +25% duration for Levitate, Fire and Star per level |
+| Coin Magnet | 3 | 50 | Pulls coins toward you from 28, 44 or 60 pixels |
+| Start Shield | 1 | 120 | Every level starts with a Shield |
+
+Upgrades apply on every difficulty. **Options → Save Data → Reset Save** clears the wallet, outfits and upgrades along with your level progress.
+
 ## Options and accessibility
 
-The title screen is organised into **Play**, **Game Setup**, **Options** and **About**.
+The title screen is organised into **Play**, **Shop**, **Game Setup**, **Options** and **About**.
 
 | Menu | Settings |
 | --- | --- |
@@ -166,7 +206,7 @@ The title screen is organised into **Play**, **Game Setup**, **Options** and **A
 | **Display** | CRT filter, vignette, fullscreen |
 | **Accessibility** | Color mode (Off, Protan, Deutan, Tritan, High-contrast), enemy outlines, screen shake, vibration |
 | **Touch controls** | Touch pad (Auto, On, Off), button size, vibration |
-| **Save data** | Reset save (asks for confirmation) |
+| **Save data** | Reset save (asks for confirmation; also clears coins, outfits and upgrades) |
 | **Developer** | Locked by default (see below) |
 
 The Protan, Deutan and Tritan modes apply a color-shift filter to the whole game canvas. They are an aid, not a medical-grade correction.
@@ -190,7 +230,7 @@ Unlocked features:
 | `K` | Defeat the boss instantly |
 | `L` | Show the recent event log on screen |
 
-It also shows a debug panel (version, FPS, position, velocity) and unlocks every level in Level Select.
+It also shows a debug panel (version, FPS, position, velocity) and unlocks every level in Level Select. The Developer menu also has a **+1000 coins** button for testing the shop.
 
 ### Setting your own code (maintainers)
 
@@ -218,7 +258,7 @@ The script inside `pixel-hopper.html` is organised into labelled sections, in th
 
 | Section | Contents |
 | --- | --- |
-| `CONFIG` | Canvas size, difficulties, heroes, bosses, power-ups, color filters, secret-code hash |
+| `CONFIG` | Canvas size, difficulties, heroes, outfits, upgrades, bosses, power-ups, color filters, secret-code hash |
 | `LEVELS` | Hand-built levels, the seeded level generator, the tutorial |
 | `SAVE + GAME STATE` | Settings, progress, global state |
 | `DEBUG` | Event log, invariant checks, error recovery, save sanitising |
@@ -272,6 +312,8 @@ Requires Node 18 or newer. The runner loads the game headlessly with a fake canv
 7. **Corrupted save data** is repaired.
 8. **Render errors** do not stop the main loop.
 9. **Every hero on every difficulty** can clear a 3-tile gap with a last-moment jump.
+10. **Economy and shop:** coin payouts per difficulty, no payout in the tutorial, purchase rules, price tables, every upgrade's effect, and reset save.
+11. **Noclip safety:** leaving noclip inside a platform pushes the player out instead of trapping them.
 
 The runner exits with a non-zero code on failure, so it works in CI. It does not prove that every level is completable end to end, since there is no full pathfinding solver. Please open an issue if a level feels unfair.
 
@@ -286,7 +328,8 @@ The runner exits with a non-zero code on failure, so it works in CI. It does not
 
 | Version | Highlights |
 | --- | --- |
-| **1.02** | Deep bug-fix and code-organisation update: **Demon difficulty could not jump** (fixed), main loop could freeze permanently after an error (now recovers), corrupted saves could crash startup (now repaired), screen shake and toast timing depended on monitor refresh rate, long level names overlapped the HUD, two unreachable platforms in Neon Citadel and nine enemies placed on spikes in generated levels, the developer level-skip could enter the tutorial. Code is now split into labelled sections with a `PH` debug API, an event log and a test runner |
+| **1.1** | Shop update: coins now bank on level clear and can be spent on 6 outfits and 5 permanent upgrades (extra lives, jump height, power-up time, coin magnet, start shield). Also fixed: leaving developer noclip inside a wall could trap the player, and save repair now covers shop data. 11 test groups |
+| 1.02 | Deep bug-fix and code-organisation update: **Demon difficulty could not jump** (fixed), main loop could freeze permanently after an error (now recovers), corrupted saves could crash startup (now repaired), screen shake and toast timing depended on monitor refresh rate, long level names overlapped the HUD, two unreachable platforms in Neon Citadel and nine enemies placed on spikes in generated levels, the developer level-skip could enter the tutorial. Code is now split into labelled sections with a `PH` debug API, an event log and a test runner |
 | 1.01 | Bug fixes: Developer screen could return to a stale menu (even a paused game), holding Enter repeated menu actions, `P` could not resume from pause, the touch pause button could not resume, fireballs could fire on resume from pause, the game kept running in a background tab, and the level-select scroll arrow overlapped the title |
 | 1.0 | 15 levels, 3 bosses, 4 superpowers including levitation, code-locked developer mode, colorblind and touch accessibility, reorganised menus, new sound effects |
 | 0.9 beta | Tutorial level with hint signs, lighting and shadows, reset save |
