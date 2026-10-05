@@ -29,7 +29,7 @@ Run, jump and stomp through 15 levels, fight 3 bosses, collect superpowers (incl
 ## Quick start
 
 ```bash
-git clone https://github.com/<your-username>/pixel-hopper.git
+git clone https://github.com/aylanarciso0721-lang/pixel-hopper.git
 cd pixel-hopper
 # open the game in your browser
 open pixel-hopper.html        # macOS
@@ -322,7 +322,7 @@ The runner exits with a non-zero code on failure, so it works in CI. It does not
 1. Rename `pixel-hopper.html` to `index.html` (or keep the name and link to it directly).
 2. Push to GitHub.
 3. Go to **Settings → Pages**, choose your branch and the `/ (root)` folder, and save.
-4. Your game will be live at `https://<your-username>.github.io/<repo-name>/`.
+4. Your game will be live at `https://aylanarciso0721-lang.github.io/Pixel-Hopper/`.
 
 ## Changelog
 
