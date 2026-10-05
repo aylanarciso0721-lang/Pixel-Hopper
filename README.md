@@ -1,13 +1,15 @@
 # 🕹️ Pixel Hopper
 
-![version](https://img.shields.io/badge/version-1.1-brightgreen) ![dependencies](https://img.shields.io/badge/dependencies-none-blue) ![platform](https://img.shields.io/badge/platform-browser-orange)
+![version](https://img.shields.io/badge/version-1.2-brightgreen) ![dependencies](https://img.shields.io/badge/dependencies-none-blue) ![platform](https://img.shields.io/badge/platform-browser-orange)
 
 A retro pixel-art platformer that runs entirely in your browser. One HTML file, no build step, no dependencies.
 
 Run, jump and stomp through 15 levels, fight 3 bosses, collect superpowers (including levitation), and play on five difficulty levels, with colorblind and touch-screen support built in.
 
 <!-- Add a screenshot or GIF here:
-![Pixel Hopper gameplay](docs/screenshot.png)
+![Pixel Hopper gameplay](docs/<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" shape-rendering="crispEdges" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTpmMmFhNzIxOS1jODdlLTRiODUtOWQ2NC01N2I4MTFhZTdjOTAAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaLdMwyBNtLBObXP1Nb88UTYAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo1Y2Q3YzU5Mi05Mzc2LTQ0MzctOTk3MS03NTc2Y2ZjM2VmZjFscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNolkMkqMX9u0/AXiWjweHZSAAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg+d/nkbgh4QGkUDPrfldkl8akL0OZqIA4IzPq/OcwfVikZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaFtuLwrzM2xmuU/amBlEaeoAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCA/OV0ZIFK7b4EECs0z7ED3fdqTtZ36Ku4Aado5T9JXHWRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiYZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmYyYWE3MjE5LWM4N2UtNGI4NS05ZDY0LTU3YjgxMWFlN2M5MC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjdkM2M0ZGQ1LTZhOTQtNGRiMS1hYjY1LTdlNzIwNDQwMWUzOXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCD53+eRuCHhAaRQM+t+V2SXxqQvQ5mogDgjM+r85zB9WKJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFgg7kNqG1npA9FPw0ov2BXPUVGMxyos+tNNSr9b8159996iY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggW7HGU755gbnKueNVEJUolTn8eSu8dwKBZS8D7xhlXp10Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQCvx34WDxeozWcI931xieqeWAyxqEZkPFPh7uCzNV4N98+TErKaWaIthBehngjjgg/J95MLNwDpPQ63prscNvlE=</c2pa:manifest></metadata><rect width="20" height="20" rx="3" fill="#0b0b12"/><g transform="translate(2 2)"><rect x="2" y="1" width="12" height="4" fill="#e03030"/><rect x="10" y="4" width="5" height="2" fill="#e03030"/><rect x="3" y="5" width="10" height="5" fill="#ffc890"/><rect x="9" y="6" width="2" height="3" fill="#000"/><rect x="2" y="10" width="12" height="4" fill="#3858f0"/><rect x="3" y="14" width="4" height="3" fill="#202060"/><rect x="9" y="14" width="4" height="3" fill="#202060"/></g></svg>
+enshot.png<img width="150" height="150" alt="icon" src="https://github.com/user-attachments/assets/3fc60309-556e-407e-bd1c-36a173ad5166"/>
+)
 -->
 
 ## Contents
@@ -17,6 +19,8 @@ Run, jump and stomp through 15 levels, fight 3 bosses, collect superpowers (incl
 - [Controls](#controls)
 - [Gameplay guide](#gameplay-guide)
 - [Shop: outfits and upgrades](#shop-outfits-and-upgrades)
+- [Progression: achievements, daily challenge, best times](#progression-achievements-daily-challenge-best-times)
+- [Install and play offline](#install-and-play-offline)
 - [Options and accessibility](#options-and-accessibility)
 - [Developer mode](#developer-mode)
 - [Project structure](#project-structure)
@@ -49,6 +53,11 @@ You can also just double-click `pixel-hopper.html`.
 - **4 superpowers** you collect from glowing orbs: Levitate, Shield, Fire and Star.
 - **4 playable heroes** with different strengths.
 - **Shop:** bank the coins you collect, then buy 6 outfits and 5 permanent upgrades.
+- **Checkpoints** in every level on every difficulty, and **Continue from checkpoint** after a game over.
+- **Boss intros and a second phase:** each boss roars in, then gets faster and adds a spread-shot attack at half health.
+- **Progression:** 10 achievements, a **daily challenge** level with a date-based seed, and best-time records.
+- **Gamepad support and key remapping.**
+- **Installable and offline:** web app manifest, service worker and a bundled pixel font.
 - **5 difficulty levels:** Easy, Normal, Hard, Insane and Demon.
 - **Retro look with lighting:** 16×16 sprites on a 320×192 canvas, gradient skies, parallax hills, shadows, ambient particles, optional CRT scanlines and vignette.
 - **Chiptune music and sound effects** generated with the Web Audio API (no audio files).
@@ -70,7 +79,21 @@ You can also just double-click `pixel-hopper.html`.
 | Fire (with Fire power) | `X` or `Shift` |
 | Levitate (with Levitate power) | Hold jump while in the air |
 | Pause / resume | `Esc` or `P` (the game also pauses automatically when the tab loses focus) |
+
+These are the defaults. Rebind Left, Right, Jump, Fire and Down under **Options → Keyboard / Pad**.
 | Menus | `↑` `↓` to move, `←` `→` to change options, `Enter` to select, `Esc` to go back |
+
+### Gamepad
+
+Any standard controller works (Xbox, PlayStation, Switch Pro and similar). It is detected automatically when you press a button.
+
+| Action | Control |
+| --- | --- |
+| Move | Left stick or D-pad |
+| Jump | `A` (bottom face button) or D-pad up |
+| Fire | `X` (left face button) |
+| Pause / resume | Start |
+| Menus | D-pad or stick to move, `A` to select, `B` to go back |
 
 ### Mouse and touch
 
@@ -128,6 +151,12 @@ Stomp most enemies from above. Touching them from the side costs a life.
 
 Orbs are marked with letters, so you never need to tell them apart by color. You can't levitate above the top of the level or past the side walls.
 
+### Checkpoints
+
+Every level (except the tutorial) has up to two checkpoint flags, placed on safe ground away from spikes. Touch one and it turns green. If you die you restart there with your coins and orb pickups intact, and you are briefly invulnerable. Boss levels have a checkpoint before the arena, not inside it.
+
+On **Insane** and **Demon** you only have one life, so a death is a game over. The game-over screen then offers **Continue from checkpoint**, which restores your starting lives at the last checkpoint you reached. **Retry level** starts from the beginning.
+
 ### Bosses
 
 | Level | Boss |
@@ -136,7 +165,7 @@ Orbs are marked with letters, so you never need to tell them apart by color. You
 | 10 | Demon King |
 | 15 | Void Titan |
 
-Bosses chase you, jump and shoot projectiles, and speed up as they take damage. Stomp them or hit them with fireballs. Shield and Fire orbs are placed in each arena.
+Each boss has a short roaring intro during which it cannot hurt you. Bosses then chase you, jump and shoot projectiles, and speed up as they take damage. At **half health** a boss becomes **enraged**: its eyes turn yellow, it moves 25% faster, jumps more often and fires a three-way spread shot. Stomp them or hit them with fireballs. Shield and Fire orbs are placed in each arena.
 
 ### Levels
 
@@ -196,6 +225,43 @@ The price of each level is the base price × the level you are buying (for examp
 
 Upgrades apply on every difficulty. **Options → Save Data → Reset Save** clears the wallet, outfits and upgrades along with your level progress.
 
+## Progression: achievements, daily challenge, best times
+
+### Achievements
+
+Open **Play → Achievements**. There are 10 badges:
+
+| Achievement | How to earn it |
+| --- | --- |
+| First Steps | Clear level 1 |
+| Boss Slayer | Defeat a boss |
+| Untouchable | Clear a level without dying |
+| Stomper | Stomp 50 enemies in total (counted on level clears) |
+| Coin Hoarder | Earn 500 coins in total |
+| Sky High | Collect a Levitate orb |
+| Fashionista | Own every outfit |
+| Demon Hunter | Clear a level on Demon |
+| Completionist | Clear all 15 levels |
+| Daily Grind | Clear the daily challenge |
+
+### Daily challenge
+
+**Play → Daily** loads a generated level whose layout is fixed by today's date, so everyone gets the same level on the same day (in their local time zone). The first clear each day pays **double coins** and unlocks Daily Grind. Replays pay nothing but still count for your best score.
+
+### Best times
+
+Every level remembers your fastest clear. The clear screen shows **NEW RECORD!** when you beat it.
+
+## Install and play offline
+
+Pixel Hopper is a progressive web app. When it is served over **HTTPS** (for example GitHub Pages), browsers can install it and it keeps working offline:
+
+- **Desktop Chrome or Edge:** click the install icon in the address bar.
+- **Android Chrome:** menu → *Install app*.
+- **iPhone or iPad Safari:** Share → *Add to Home Screen*.
+
+The pixel font is bundled inside `pixel-hopper.html`, so the game looks the same offline. A service worker caches the game and updates it in the background the next time you are online. Opening the file directly from disk (`file://`) still works, but without installation or offline caching.
+
 ## Options and accessibility
 
 The title screen is organised into **Play**, **Shop**, **Game Setup**, **Options** and **About**.
@@ -205,6 +271,7 @@ The title screen is organised into **Play**, **Shop**, **Game Setup**, **Options
 | **Audio** | Volume, music, sound effects |
 | **Display** | CRT filter, vignette, fullscreen |
 | **Accessibility** | Color mode (Off, Protan, Deutan, Tritan, High-contrast), enemy outlines, screen shake, vibration |
+| **Keyboard / Pad** | Rebind Left, Right, Jump, Fire and Down (conflicting keys are refused, `Esc` cancels), reset to defaults |
 | **Touch controls** | Touch pad (Auto, On, Off), button size, vibration |
 | **Save data** | Reset save (asks for confirmation; also clears coins, outfits and upgrades) |
 | **Developer** | Locked by default (see below) |
@@ -248,9 +315,15 @@ console.log(hs('your20digitcodehere'));
 
 ```
 pixel-hopper/
-├── pixel-hopper.html     # the whole game: HTML, CSS and JavaScript
+├── pixel-hopper.html          # the whole game: HTML, CSS, JavaScript and the bundled font
+├── manifest.webmanifest       # web app manifest (installable app)
+├── sw.js                      # service worker (offline play)
+├── icon.svg, icon-*.png       # app icons
 ├── tests/
-│   └── run-tests.js      # headless test runner (Node, no dependencies)
+│   └── run-tests.js           # headless test runner (Node, no dependencies)
+├── .github/workflows/
+│   ├── test.yml               # runs the tests on every push and pull request
+│   └── release.yml            # runs the tests and publishes a GitHub release for v* tags
 └── README.md
 ```
 
@@ -258,7 +331,7 @@ The script inside `pixel-hopper.html` is organised into labelled sections, in th
 
 | Section | Contents |
 | --- | --- |
-| `CONFIG` | Canvas size, difficulties, heroes, outfits, upgrades, bosses, power-ups, color filters, secret-code hash |
+| `CONFIG` | Canvas size, difficulties, heroes, outfits, upgrades, bosses, power-ups, achievements, key bindings, color filters, secret-code hash |
 | `LEVELS` | Hand-built levels, the seeded level generator, the tutorial |
 | `SAVE + GAME STATE` | Settings, progress, global state |
 | `DEBUG` | Event log, invariant checks, error recovery, save sanitising |
@@ -313,9 +386,16 @@ Requires Node 18 or newer. The runner loads the game headlessly with a fake canv
 8. **Render errors** do not stop the main loop.
 9. **Every hero on every difficulty** can clear a 3-tile gap with a last-moment jump.
 10. **Economy and shop:** coin payouts per difficulty, no payout in the tutorial, purchase rules, price tables, every upgrade's effect, and reset save.
+12. **Static reachability solver:** every level (including the daily one) must have a chain of jumps, limited by the real jump physics, from the spawn to the flag. The solver is checked against deliberately broken levels so it cannot pass by accident.
+13. **Checkpoints** on every difficulty: reached, respawn with progress kept, and continue after a game over.
+14. **Bosses:** the roaring intro, and the phase 2 transition.
+15. **Progression:** achievements, best times, and the daily level (deterministic, pays double once).
+16. **Key remapping and gamepad:** conflicts, cancel, reset, menus by pad, movement by pad, disconnect.
+17. **App files:** manifest, icons, service worker, bundled font and workflows exist and are valid.
+18. **Save repair** for key bindings, achievements and stats.
 11. **Noclip safety:** leaving noclip inside a platform pushes the player out instead of trapping them.
 
-The runner exits with a non-zero code on failure, so it works in CI. It does not prove that every level is completable end to end, since there is no full pathfinding solver. Please open an issue if a level feels unfair.
+The runner exits with a non-zero code on failure, and `.github/workflows/test.yml` runs it on Node 18, 20 and 22 for every push. The solver proves a platform-to-platform jump path exists; it deliberately ignores enemies and ceilings, so it shows each level can be finished in principle, not that every enemy placement is fair. Please open an issue if a level feels unfair.
 
 ## Hosting on GitHub Pages
 
@@ -328,7 +408,8 @@ The runner exits with a non-zero code on failure, so it works in CI. It does not
 
 | Version | Highlights |
 | --- | --- |
-| **1.1** | Shop update: coins now bank on level clear and can be spent on 6 outfits and 5 permanent upgrades (extra lives, jump height, power-up time, coin magnet, start shield). Also fixed: leaving developer noclip inside a wall could trap the player, and save repair now covers shop data. 11 test groups |
+| **1.2** | Pro update: checkpoints in every level plus continue-from-checkpoint after a game over (helps Insane and Demon), boss roaring intros and an enraged phase 2 with a spread shot, 10 achievements, a daily challenge, best-time records, gamepad support, key remapping, web app manifest, service worker, bundled font, and GitHub Actions for tests and releases. The tests gained a pathfinding solver and now have 18 groups |
+| 1.1 | Shop update: coins now bank on level clear and can be spent on 6 outfits and 5 permanent upgrades (extra lives, jump height, power-up time, coin magnet, start shield). Also fixed: leaving developer noclip inside a wall could trap the player, and save repair now covers shop data. 11 test groups |
 | 1.02 | Deep bug-fix and code-organisation update: **Demon difficulty could not jump** (fixed), main loop could freeze permanently after an error (now recovers), corrupted saves could crash startup (now repaired), screen shake and toast timing depended on monitor refresh rate, long level names overlapped the HUD, two unreachable platforms in Neon Citadel and nine enemies placed on spikes in generated levels, the developer level-skip could enter the tutorial. Code is now split into labelled sections with a `PH` debug API, an event log and a test runner |
 | 1.01 | Bug fixes: Developer screen could return to a stale menu (even a paused game), holding Enter repeated menu actions, `P` could not resume from pause, the touch pause button could not resume, fireballs could fire on resume from pause, the game kept running in a background tab, and the level-select scroll arrow overlapped the title |
 | 1.0 | 15 levels, 3 bosses, 4 superpowers including levitation, code-locked developer mode, colorblind and touch accessibility, reorganised menus, new sound effects |
