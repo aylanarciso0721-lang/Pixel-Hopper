@@ -2,11 +2,11 @@
 // Headless test runner for Pixel Hopper. Usage: node tests/run-tests.js [path/to/pixel-hopper.html]
 const fs=require('fs'),path=require('path'),file=process.argv[2]||path.join(__dirname,'..','pixel-hopper.html');
 const src=fs.readFileSync(file,'utf8').split('<script>')[1].split('</script>')[0];
-const fails={},bad=m=>fails[m]=(fails[m]||0)+1,note=m=>m.replace(/-?\d+(\.\d+)?/g,'#');
-function load(store){const noop=()=>{},H={},C={},raf=[],nav={};let boom=0;
+let el_ref;const fails={},bad=m=>fails[m]=(fails[m]||0)+1,note=m=>m.replace(/-?\d+(\.\d+)?/g,'#');
+function load(store,WSck,three){const noop=()=>{},H={},C={},raf=[],nav={};let boom=0;
  const ctx=new Proxy({},{get:(t,k)=>k.startsWith('create')?()=>({addColorStop:noop}):k=='fillText'?()=>{if(boom){boom=0;throw new Error('boom')}}:noop,set:()=>true});
- const el={getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:320,height:192}),addEventListener:(n,h)=>C[n]=h,classList:{toggle:noop},style:{setProperty:noop},setAttribute:noop,dataset:{}},win={};
- const g={window:win,document:{getElementById:()=>el,querySelectorAll:()=>[],body:el,documentElement:el,addEventListener:(n,h)=>H['doc'+n]=h,hidden:false},localStorage:{getItem:()=>store||null,setItem:noop},performance:{now:()=>0},requestAnimationFrame:f=>raf.push(f),setInterval:noop,setTimeout:noop,matchMedia:()=>({matches:false}),navigator:nav,addEventListener:(n,h)=>H[n]=h};
+ const el=el_ref={getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:320,height:192}),addEventListener:(n,h)=>C[n]=h,classList:{toggle:noop},style:{setProperty:noop},setAttribute:noop,dataset:{}},win={};
+ const g={window:win,document:{createElement:()=>({width:0,height:0,getContext:()=>ctx}),getElementById:()=>el,querySelectorAll:()=>[],body:el,documentElement:el,addEventListener:(n,h)=>H['doc'+n]=h,hidden:false},localStorage:{getItem:()=>store||null,setItem:noop},performance:{now:()=>0},requestAnimationFrame:f=>raf.push(f),setInterval:noop,setTimeout:noop,matchMedia:()=>({matches:false}),navigator:nav,WebSocket:WSck,THREE:three,addEventListener:(n,h)=>H[n]=h};
  new Function(...Object.keys(g),src)(...Object.values(g));return{PH:win.PH,H,C,raf,nav,boom:()=>boom=1}}
 const {PH,H,C}=load();
 // 1. static level validation
@@ -32,6 +32,7 @@ PH.S.du=PH.S.dev=PH.S.fly=0;PH.S.df=1;PH.LV.forEach((L,i)=>{if(L.bs==null)return
  if(PH.bo.a)bad('boss '+(i+1)+' not defeated');else{PH.p.x=L.f[0]*16;PH.p.y=130;PH.step();if(PH.scene!='clear')bad('flag after boss '+(i+1)+' did not clear level')}}catch(e){bad('boss crash: '+e.message)}});
 // 4. every menu item runs and every scene draws
 PH.P.w=5000;for(const n of Object.keys(PH.HD)){try{PH.set('scene',n);if(PH.M[n])PH.M[n]().forEach(it=>{PH.set('scene',n);it[1]()});PH.set('scene',n);PH.draw()}catch(e){bad('menu '+n+': '+e.message)}}
+PH.S.np=1;
 // 5. secret code
 PH.S.du=PH.S.dev=0;PH.go('code');'1234'.split('').forEach(PH.kp);PH.kp('OK');if(PH.S.du)bad('wrong code accepted');PH.go('code');'73906158240417369852'.split('').forEach(PH.kp);PH.kp('OK');if(!PH.S.du)bad('right code rejected');
 // 6. random keyboard + pointer events, locked and unlocked
@@ -95,14 +96,98 @@ PH.S.du=PH.S.dev=PH.S.fly=0;PH.S.df=1;PH.LV.forEach((L,i)=>{if(L.bs==null)return
  for(let i=0;i<8;i++)q.step();key('j');q.K.j=1;q.step();if(!(q.p.vy<0))bad('remap: new jump key does nothing');q.K.j=0;
  q.S.kb={};q.go('keys');const it=()=>q.M.keys();it()[0][1]();key('w');if(q.S.kb.left)bad('remap: bound a key that is already used');it()[0][1]();key('q');if(q.S.kb.left!=='q')bad('remap: could not bind a free key');it()[0][1]();key('Escape');if(q.S.kb.left!=='q')bad('remap: escape should cancel');q.M.keys().slice(-2)[0][1]();if(Object.keys(q.S.kb).length)bad('remap: reset keys failed');
  q.go('title');g.nav.getGamepads=()=>[{connected:true,buttons:Array.from({length:16},(_,i)=>({pressed:i==15||i==0})),axes:[0,0]}];q.gp();if(q.scene!='pl')bad('gamepad: A did not activate Play in the menu (scene '+q.scene+')');
- q.play(0);for(let i=0;i<4;i++)q.step();const x0=q.p.x;q.gp();for(let i=0;i<30;i++)q.step();if(!(q.p.x>x0+10)||!q.V.right)bad('gamepad: d-pad right did not move the player');
- g.nav.getGamepads=()=>[];q.gp();if(q.V.right||q.V.jump)bad('gamepad: input stuck after disconnect')}
+ q.play(0);for(let i=0;i<4;i++)q.step();const x0=q.p.x;q.gp();for(let i=0;i<30;i++)q.step();if(!(q.p.x>x0+10)||!q.PAD[0].right)bad('gamepad: d-pad right did not move the player');
+ g.nav.getGamepads=()=>[];q.gp();if(q.PAD[0].right||q.PAD[0].a)bad('gamepad: input stuck after disconnect')}
 // 17. offline / installable app files
 {const root=path.dirname(file),rd=f=>fs.readFileSync(path.join(root,f),'utf8'),has=f=>fs.existsSync(path.join(root,f)),html=fs.readFileSync(file,'utf8');
  if(!has('manifest.webmanifest'))bad('missing manifest.webmanifest');else{try{const m=JSON.parse(rd('manifest.webmanifest'));if(!m.name||!m.start_url||!m.display)bad('manifest missing name, start_url or display');(m.icons||[]).forEach(ic=>{if(!has(ic.src))bad('manifest icon missing: '+ic.src)});if(!(m.icons||[]).some(ic=>/512/.test(ic.sizes)))bad('manifest needs a 512px icon')}catch(e){bad('manifest is not valid JSON')}}
  if(!has('sw.js'))bad('missing sw.js');else{try{new Function(rd('sw.js'))}catch(e){bad('sw.js has a syntax error')}if(!/caches\.open/.test(rd('sw.js')))bad('sw.js does not cache anything')}
  if(!/rel="manifest"/.test(html))bad('html does not link the manifest');if(!/serviceWorker/.test(html))bad('html does not register the service worker');if(!/@font-face\{font-family:'PH Pixel';src:url\(data:font\/woff2/.test(html))bad('font is not bundled in the html');
+ {const pk=has('package.json')?JSON.parse(rd('package.json')):null;if(!pk||!pk.dependencies||!pk.dependencies.ws)bad('package.json must list the ws dependency');if(!has('server/server.js'))bad('missing server/server.js');if(!has('Dockerfile'))bad('missing Dockerfile')}
  ['test.yml','release.yml'].forEach(w=>{const p='.github/workflows/'+w;if(!has(p))bad('missing '+p);else if(!/tests\/run-tests\.js/.test(rd(p)))bad(w+' does not run the tests')})}
 // 18. new save fields are repaired
 {const q=load(JSON.stringify({S:{kb:{jump:'x'.repeat(50),zzz:'q',left:5,right:'l'}},P:{ac:['first','hack',3,'first'],t:'x',st:{s:-5,e:'a'},dd:-1,db:'z'}})).PH;if(Object.keys(q.S.kb).join()!=='right')bad('save: key bindings not sanitised ('+Object.keys(q.S.kb)+')');if(q.P.ac.join()!=='first')bad('save: achievements not sanitised');if(!Array.isArray(q.P.t)||q.P.st.s!==0||q.P.st.e!==0||q.P.dd!==0||q.P.db!==0)bad('save: stats not sanitised')}
-const n=Object.keys(fails).length;console.log(n?'FAIL':'PASS','|',PH.LV.length,'levels | sessions won by random play:',wins);Object.entries(fails).sort().forEach(([k,v])=>console.log(' x'+v,k));process.exit(n?1:0);
+// 19. local co-op: 4 players, independent controls, shared lives, respawn, rubber band, boss scaling
+{const g=load(),q=g.PH;q.S.du=q.S.dev=0;q.S.df=1;q.S.np=4;q.play(0);q.en.forEach(e=>e.a=0);
+ if(q.pl.length!=4||new Set(q.pl.map(p=>p.x)).size!=4)bad('coop: 4 players at distinct spawn points expected');if(q.lives!=q.DF[1][1]+3)bad('coop: shared lives pool wrong ('+q.lives+')');
+ for(let i=0;i<10;i++)q.step();const x0=q.pl.map(p=>p.x);q.K.l=1;for(let i=0;i<30;i++)q.step();q.K.l=0;if(!(q.pl[1].x>x0[1]+10)||q.pl[0].x!==x0[0]||q.pl[2].x!==x0[2])bad('coop: P2 keys should move only P2');const xr=q.pl[1].x;q.K.j=1;for(let i=0;i<30;i++)q.step();q.K.j=0;if(!(q.pl[1].x<xr-8)||q.pl[0].x!==x0[0])bad('coop: P2 left key should move only P2 left');for(let i=0;i<20;i++)q.step();g.H.keydown({key:'i',repeat:false,preventDefault(){}});q.step();if(!(q.pl[1].vy<0)||q.pl[0].vy<0||q.pl[2].vy<0)bad('coop: P2 jump key should make only P2 jump');
+ const pad=(n,right)=>Array.from({length:n},(_,i)=>({connected:true,buttons:Array.from({length:16},(_,b)=>({pressed:right&&i==2&&b==15})),axes:[0,0]}));
+ g.nav.getGamepads=()=>pad(3,true);q.gp();const x2=q.pl[2].x;for(let i=0;i<30;i++)q.step();if(!(q.pl[2].x>x2+10)||q.pl[3].x!==x0[3])bad('coop: pad 3 should move only P3');g.nav.getGamepads=()=>[];q.gp();
+ q.pl[2].y=400;for(let i=0;i<70;i++)q.step();if(q.lives!=q.DF[1][1]+2||q.pl[2].dead||q.pl[2].out||q.scene!='play')bad('coop: a death should cost one shared life and respawn the player ('+q.lives+')');
+ const mid=q.pl.map(p=>p.x);q.pl[0].x=mid[1]+420;for(let i=0;i<130;i++)q.step();const al=q.pl.filter(p=>!p.out&&!p.dead);if(Math.abs(q.pl[0].x-q.pl[1].x)>220)bad('coop: a player left far behind was not brought back');
+ q.set('lives',1);q.pl[0].y=400;for(let i=0;i<70;i++)q.step();if(!q.pl[0].out||q.scene!='play')bad('coop: out of lives should remove only that player');
+ q.pl.slice(1).forEach(p=>{p.y=400});for(let i=0;i<120;i++)q.step();if(q.scene!='over')bad('coop: game over expected when every player is out ('+q.scene+')');
+ q.S.np=4;const bi=q.LV.findIndex(l=>l.bs!=null);q.play(bi);if(q.bo.hp!=Math.round(q.BS[q.L.bs][2]*2.5))bad('coop: boss health should scale with players');
+ q.play(0);q.en.forEach(e=>e.a=0);q.pl[3].x=q.L.f[0]*16;q.pl[3].y=130;q.step();if(q.scene!='clear')bad('coop: any player reaching the flag should clear the level')}
+// 20. physics layer: collisions never embed an entity; level generation and hashing are deterministic
+{const q=load().PH;let seed=12345;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;let moves=0;
+ for(let li=0;li<q.LV.length;li+=3){q.play(li);const L=q.L;
+  for(const [w,h] of [[12,15],[14,14],[28,28]])for(let t=0;t<120;t++){const o={x:rnd()*(L.w*16-w),y:rnd()*(160-h),w,h,vx:0,vy:0,g:0};if(q.emb(o))continue;
+   for(let k=0;k<40;k++){const dx=(rnd()-.5)*6.6,dy=(rnd()-.3)*14,ox=o.x,oy=o.y;o.g=0;q.mv(o,dx,dy);moves++;
+    if(![o.x,o.y].every(isFinite)){bad('physics: NaN position');break}if(q.emb(o)){bad('physics: '+w+'x'+h+' entity embedded in a wall after a move');break}
+    if(Math.abs(o.x-ox)>Math.abs(dx)+.6||Math.abs(o.y-oy)>Math.abs(dy)+.6){bad('physics: entity moved farther than its velocity (beyond the 0.5px snap tolerance)');break}
+    if(o.g){let gr=0;for(let c=Math.floor(o.x/16);c<=Math.floor((o.x+o.w-.1)/16);c++)if(q.T(c,Math.floor((o.y+o.h+.5)/16))==1)gr=1;if(!gr){bad('physics: grounded flag set without ground');break}}}}}
+ const T2=q.T;for(const [x,y] of [[-5,3],[1e6,3],[3,-9],[3,99],[NaN,3],[3,NaN],[Infinity,0],[0.5,0.5]]){let v;try{v=T2(x,y)}catch(e){bad('physics: T() threw for '+x+','+y);continue}if(![0,1,2].includes(v))bad('physics: T() returned '+v+' for '+x+','+y)}
+ const A=load().PH,B=load().PH;if(A.LV.length!=B.LV.length||A.LV.some((l,i)=>l.daily?false:JSON.stringify([l.g,l.p,l.s,l.c,l.e,l.u])!=JSON.stringify([B.LV[i].g,B.LV[i].p,B.LV[i].s,B.LV[i].c,B.LV[i].e,B.LV[i].u])))bad('levels are not deterministic between loads');
+ if(q.hs('73906158240417369852')!==q.DH||q.hs('73906158240417369853')===q.DH)bad('code hash sanity check failed');
+ const names=new Set(A.LV.filter(l=>!l.tut&&!l.daily).map(l=>l.n));if(names.size!=100)bad('every level should have a unique name ('+names.size+')');
+ const bossLv=A.LV.map((l,i)=>l.bs!=null?i+1:0).filter(Boolean).join();if(bossLv!=='10,20,30,40,50,60,70,80,90,100')bad('bosses must be on every 10th level, got '+bossLv)}
+// 21. 3D layer: real three.js scene graph with a fake renderer
+let T3;try{T3=require('three')}catch(e){}
+const Fake=class{constructor(o){this.domElement=o.canvas;this.n=0}setPixelRatio(){}setSize(){}render(sc,cam){sc.updateMatrixWorld();cam.updateMatrixWorld();this.n++}dispose(){}};
+if(!T3)console.log('SKIPPED 3D tests (run npm install to enable them)');
+else{const g=load(null,null,Object.assign({},T3,{WebGLRenderer:Fake})),q=g.PH,R=q.R3;q.S.du=q.S.dev=0;q.S.d3=1;
+ if(!R.ok)bad('3D: renderer failed to initialise');
+ else{for(let li=0;li<q.LV.length;li++){q.S.np=1+li%4;q.play(li);q.step();q.draw();
+   if(!R.lv||R.pl.length!=q.pl.length||R.co.length!=q.co.length||R.en.length!=q.en.length||R.pu.length!=q.pu.length)bad('3D: scene does not match level '+(li+1));
+   const solid=q.G.flat().filter(v=>v==1).length,dm=R.lv.children.find(c=>c.isInstancedMesh);if(!dm||dm.count!=solid)bad('3D: tile count mismatch on level '+(li+1));
+   const p0=q.pl[0],v=new T3.Vector3((p0.x+6)/16,(192-p0.y-7)/16,0).project(R.cam),ex=((p0.x+6-q.camX)/160)-1,ey=1-(p0.y+7)/96;
+   if(Math.abs(v.x-ex)>.1||Math.abs(v.y-ey)>.12)bad('3D: camera does not line up with the 2D layout on level '+(li+1)+' ('+v.x.toFixed(2)+','+v.y.toFixed(2)+' vs '+ex.toFixed(2)+','+ey.toFixed(2)+')');
+   const lo=new T3.Vector3(q.camX/16+10,0,0).project(R.cam),hi=new T3.Vector3(q.camX/16+10,12,0).project(R.cam);if(lo.y<-1.1||lo.y>-.85||hi.y>1.1||hi.y<.85)bad('3D: all 12 tile rows should fill the view on level '+(li+1));
+   if(el_display()!=='block')bad('3D: canvas not shown during play');
+   const kept=R.lv;q.draw();q.draw();if(R.lv!==kept)bad('3D: scene rebuilt every frame on level '+(li+1))}
+  q.go('title');q.draw();if(el_display()!=='none')bad('3D: canvas should be hidden in menus');
+  q.S.d3=0;q.play(0);q.step();q.draw();if(el_display()!=='none')bad('3D: setting did not switch to the 2D renderer');q.S.d3=1;
+  const bi=q.LV.findIndex(l=>l.bs!=null);q.S.np=1;q.play(bi);q.pl[0].x=(q.L.ar+5)*16;q.pl[0].y=130;for(let i=0;i<5;i++)q.step();q.draw();if(!R.bo||R.lv.children.length<5)bad('3D: boss missing');const lk=R.key;q.step();q.draw();if(R.key!==lk)bad('3D: scene key unstable');
+  const g2=load(null,null,Object.assign({},T3,{WebGLRenderer:class extends Fake{render(){throw new Error('GL lost')}}})),q2=g2.PH;q2.S.d3=1;q2.S.du=q2.S.dev=0;q2.play(0);q2.step();let thrown=0;try{q2.draw();q2.draw()}catch(e){thrown=1}
+  if(thrown||q2.R3.ok)bad('3D: a render failure must fall back to the 2D renderer without throwing');
+  const g3=load(null,null,Object.assign({},T3,{WebGLRenderer:Fake})),q3=g3.PH;q3.S.du=q3.S.dev=1;q3.S.d3=1;
+  for(let r=0;r<120;r++){try{q3.S.np=1+r%4;q3.S.df=r%5;q3.S.hr=r%4;q3.S.of=0;q3.S.god=r%3==0;q3.play(r%q3.NL);q3.pl.forEach((p,i)=>{if(r%4==0)p.pw=[...q3.PD]});
+    for(let t=0;t<500;t++){if(t%12==0){const K=q3.K;K.ArrowRight=Math.random()<.7;K.ArrowLeft=Math.random()<.15;K[' ']=Math.random()<.5;K.l=Math.random()<.3;if(Math.random()<.3)q3.pl.forEach(p=>p.jb=6);if(Math.random()<.2)q3.pl.forEach(p=>p.fq=1)}
+     if(r%7==0&&q3.L.bs!=null&&t==200)q3.pl.forEach(p=>{p.x=(q3.L.ar+5)*16;p.y=130;p.vy=0});q3.step();if(t%7==0)q3.draw();if(q3.scene!='play')break}}catch(e){bad('3D fuzz crash: '+e.message)}}}}
+function el_display(){return el_ref.style.display}
+async function netTests(){let WS,SV;try{WS=require('ws');SV=require('../server/server.js')}catch(e){console.log('SKIPPED online tests (run npm install to enable them)');return}
+ const port=await SV.start(0,'127.0.0.1'),url='ws://127.0.0.1:'+port,sleep=ms=>new Promise(r=>setTimeout(r,ms));
+ const mk=()=>{const g=load(null,WS);g.PH.S.srv=url;g.PH.S.du=g.PH.S.dev=0;g.PH.S.df=1;return g};
+ const frames=async(gs,n)=>{for(let t=0;t<n;t++){gs.forEach(g=>g.PH.step());if(t%3==0)await sleep(4)}await sleep(40)};
+ try{const A=mk(),B=mk(),C=mk(),D=mk(),E=mk(),ce=console.error;console.error=()=>{};
+  A.PH.net.ncreate();await sleep(150);
+  if(!A.PH.NET.on||!A.PH.NET.host||!/^[A-Z0-9]{4}$/.test(A.PH.NET.room)||A.PH.scene!='lobby'){bad('online: room was not created');return}
+  const room=A.PH.NET.room;B.PH.net.njoin(room.toLowerCase());await sleep(150);
+  if(!B.PH.NET.on||B.PH.NET.host||B.PH.NET.me!=1||B.PH.scene!='lobby')bad('online: guest could not join (room codes are case-insensitive)');
+  if(A.PH.NET.n!=2||B.PH.NET.n!=2)bad('online: player count not shared ('+A.PH.NET.n+','+B.PH.NET.n+')');
+  C.PH.net.njoin(room);await sleep(120);D.PH.net.njoin(room);await sleep(120);E.PH.net.njoin(room);await sleep(150);
+  if(A.PH.NET.n!=4)bad('online: room should hold 4 players, has '+A.PH.NET.n);if(E.PH.NET.on)bad('online: a 5th player was let into a full room');
+  D.PH.net.nleave();await sleep(120);if(A.PH.NET.n!=3)bad('online: a leaving player was not removed ('+A.PH.NET.n+')');
+  A.PH.NET.lv=0;A.PH.net.nstart();await sleep(150);const all=[A,B,C];
+  all.forEach((g,i)=>{if(g.PH.scene!='play'||g.PH.pl.length!=3)bad('online: the game did not start for player '+(i+1)+' ('+g.PH.scene+','+g.PH.pl.length+')')});
+  if(all.some(g=>g.PH.scene!='play'))return;
+  all.forEach(g=>g.PH.en.forEach(e=>e.a=0));await frames(all,12);
+  const sx=A.PH.pl[1].x;B.PH.K.ArrowRight=1;await frames(all,150);B.PH.K.ArrowRight=0;
+  const a1=A.PH.pl[1].x,b1=B.PH.pl[1].x,c1=C.PH.pl[1].x;
+  if(!(a1>sx+30))bad('online: remote input did not move the guest player ('+sx+' to '+a1+')');
+  if(Math.abs(a1-b1)>12||Math.abs(a1-c1)>12)bad('online: snapshots out of sync (host '+a1+', guest '+b1+', other '+c1+')');
+  await frames(all,40);const y0=A.PH.pl[1].y;B.H.keydown({key:' ',repeat:false,preventDefault(){}});await sleep(40);A.PH.step();A.PH.step();if(!(A.PH.pl[1].y<y0))bad('online: a guest jump press did not reach the host');
+  await frames(all,30);const k=A.PH.co[0];A.PH.pl[0].x=k.x-6;A.PH.pl[0].y=k.y-7;await frames(all,12);if(!(B.PH.co[0].t&&C.PH.co[0].t))bad('online: coin pickup did not reach the guests');
+  const l0=A.PH.lives;A.PH.pl[2].y=400;await frames(all,80);if(A.PH.lives!=l0-1||B.PH.lives!=A.PH.lives)bad('online: shared lives out of sync (host '+A.PH.lives+', guest '+B.PH.lives+')');
+  C.PH.net.nleave();await sleep(150);const q3=A.PH.pl.find(q=>q.slot==2);if(!q3||!q3.out)bad('online: a guest who left was not removed from the running game');
+  const w0=B.PH.P.w;A.PH.pl[0].dead=0;A.PH.pl[0].x=A.PH.L.f[0]*16;A.PH.pl[0].y=130;await frames([A,B],20);
+  if(A.PH.scene!='clear'||B.PH.scene!='clear')bad('online: level clear did not reach the guest ('+A.PH.scene+','+B.PH.scene+')');else if(B.PH.P.w!==w0+A.PH.earn)bad('online: guest did not receive the coin payout');
+  A.PH.net.nclose();await sleep(150);if(B.PH.NET.on||B.PH.scene!='mp')bad('online: guests were not told the host left ('+B.PH.scene+')');
+  const raw=new WS(url);await new Promise(r=>raw.on('open',r));raw.on('error',()=>{});raw.send('not json');raw.send(JSON.stringify({t:42}));raw.send(JSON.stringify({t:'m',d:{}}));raw.send(Buffer.alloc(20000,1));await sleep(150);
+  const F=mk();F.PH.net.ncreate();await sleep(150);if(!F.PH.NET.on)bad('online: server did not survive malformed and oversized messages');F.PH.net.nclose();
+  const http=require('http'),get=p=>new Promise(r=>http.get({host:'127.0.0.1',port,path:p},res=>{let b='';res.on('data',c=>b+=c);res.on('end',()=>r({c:res.statusCode,b}))}).on('error',()=>r({c:0,b:''})));
+  const h=await get('/health'),i=await get('/'),t=await get('/../server/server.js'),t2=await get('/%2e%2e/package.json');
+  if(h.b!='ok')bad('server: health check failed');if(i.c!=200||!/Pixel Hopper/.test(i.b))bad('server: does not serve the game');if(t.c==200||t2.c==200)bad('server: path traversal is possible');
+  console.error=ce}catch(e){bad('online: test crashed: '+e.message)}finally{await SV.close()}}
+(async()=>{await netTests();const n=Object.keys(fails).length;console.log(n?'FAIL':'PASS','|',PH.LV.length,'levels | sessions won by random play:',wins);Object.entries(fails).sort().forEach(([k,v])=>console.log(' x'+v,k));process.exit(n?1:0)})();
