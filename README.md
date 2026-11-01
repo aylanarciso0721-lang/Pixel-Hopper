@@ -5,7 +5,6 @@
 A retro platformer that runs in your browser: **100 levels, 10 bosses, a 3D view, 4-player local co-op and online rooms**. The game is one HTML file with no build step and no runtime dependencies. An optional tiny Node server adds online play.
 
 
-![Pixel Hopper gameplay](docs/screenshot.png)
 
 
 ## Contents
