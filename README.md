@@ -1,20 +1,28 @@
 # 🕹️ Pixel Hopper
 
-![version](https://img.shields.io/badge/version-1.2-brightgreen) ![dependencies](https://img.shields.io/badge/dependencies-none-blue) ![platform](https://img.shields.io/badge/platform-browser-orange)
+![version](https://img.shields.io/badge/version-2.0-brightgreen) ![levels](https://img.shields.io/badge/levels-100-orange) ![players](https://img.shields.io/badge/co--op-1--4%20players-blue) ![dependencies](https://img.shields.io/badge/runtime%20dependencies-none-lightgrey)
 
-A retro pixel-art platformer that runs entirely in your browser. One HTML file, no build step, no dependencies.
-
-Run, jump and stomp through 15 levels, fight 3 bosses, collect superpowers (including levitation), and play on five difficulty levels, with colorblind and touch-screen support built in.
+A retro platformer that runs in your browser: **100 levels, 10 bosses, a 3D view, 4-player local co-op and online rooms**. The game is one HTML file with no build step and no runtime dependencies. An optional tiny Node server adds online play.
 
 
-- [Shop: outfits and upgrades](#shop-outfits-and-upgrades)
-- [Progression: achievements, daily challenge, best times](#progression-achievements-daily-challenge-best-times)
-- [Install and play offline](#install-and-play-offline)
+![Pixel Hopper gameplay](docs/screenshot.png)
+
+
+## Contents
+
+- [Quick start](#quick-start)
+- [Features](#features)
+- [Controls](#controls)
+- [Gameplay guide](#gameplay-guide)
+- [Co-op and online multiplayer](#co-op-and-online-multiplayer)
+- [Shop and progression](#shop-and-progression)
+- [3D view](#3d-view)
 - [Options and accessibility](#options-and-accessibility)
+- [Install and play offline](#install-and-play-offline)
 - [Developer mode](#developer-mode)
 - [Project structure](#project-structure)
 - [Debugging and tests](#debugging-and-tests)
-- [Hosting on GitHub Pages](#hosting-on-github-pages)
+- [Hosting and releases](#hosting-and-releases)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
 - [License](#license)
@@ -24,89 +32,91 @@ Run, jump and stomp through 15 levels, fight 3 bosses, collect superpowers (incl
 ```bash
 git clone https://github.com/aylanarciso0721-lang/pixel-hopper.git
 cd pixel-hopper
-# open the game in your browser
-open pixel-hopper.html        # macOS
-xdg-open pixel-hopper.html    # Linux
-start pixel-hopper.html       # Windows
+# just play: open pixel-hopper.html in a browser
+# or play with the server (needed for online rooms):
+npm install
+npm start          # http://localhost:8080
 ```
-
-You can also just double-click `pixel-hopper.html`.
-
-> **Note:** the pixel font ("Press Start 2P") loads from Google Fonts. Offline, the game falls back to a monospace font and still works.
 
 ## Features
 
-- **15 levels plus a tutorial:** hand-built early levels, then seeded, generated levels with their own palettes and hazards.
-- **3 boss fights** at levels 5, 10 and 15. The arena locks behind you and the exit flag only appears once the boss is defeated.
-- **5 enemy types:** Walker, Hopper, Bat, Spiny and Ghost.
-- **4 superpowers** you collect from glowing orbs: Levitate, Shield, Fire and Star.
-- **4 playable heroes** with different strengths.
-- **Shop:** bank the coins you collect, then buy 6 outfits and 5 permanent upgrades.
-- **Checkpoints** in every level on every difficulty, and **Continue from checkpoint** after a game over.
-- **Boss intros and a second phase:** each boss roars in, then gets faster and adds a spread-shot attack at half health.
-- **Progression:** 10 achievements, a **daily challenge** level with a date-based seed, and best-time records.
-- **Gamepad support and key remapping.**
-- **Installable and offline:** web app manifest, service worker and a bundled pixel font.
-- **5 difficulty levels:** Easy, Normal, Hard, Insane and Demon.
-- **Retro look with lighting:** 16×16 sprites on a 320×192 canvas, gradient skies, parallax hills, shadows, ambient particles, optional CRT scanlines and vignette.
-- **Chiptune music and sound effects** generated with the Web Audio API (no audio files).
-- **Accessibility:** colorblind filters, high-contrast mode, enemy outlines, screen-shake toggle and vibration control.
-- **Touch support:** on-screen controls with adjustable size, plus tappable menus.
-- **Locked developer mode:** hitboxes, god mode, noclip, level skip and more, behind a 20-digit code.
-- **Saved progress:** unlocked levels, best scores and settings are stored in `localStorage`.
-- **Robust by design:** a runtime error is caught and logged instead of freezing the game, and corrupted or outdated save data is repaired on load.
-- **Auto-pause:** the game pauses when you switch tabs or windows, so you never lose a life in the background.
+- **100 levels in 10 worlds** (15 hand-built, 85 generated from fixed seeds) plus a tutorial and a daily challenge. A **boss waits at the end of every 10th level**.
+- **3D view** built with Three.js (bundled inside the file), with automatic fallback to the classic 2D pixel renderer.
+- **Co-op for up to 4 players** on one screen, with shared lives, checkpoints and boss health that scales with the number of players.
+- **Online rooms for up to 4 players** through a small WebSocket relay server (included).
+- 5 enemy types, 4 heroes, 4 superpowers (including levitation), 6 outfits and 5 permanent upgrades.
+- 5 difficulties, checkpoints on every level and **Continue from checkpoint** after a game over.
+- Achievements, best times and a daily challenge.
+- Keyboard, mouse, touch and gamepad support, key remapping, colorblind modes.
+- Installable and playable offline (progressive web app).
+- A locked developer mode and a headless test suite.
 
 ## Controls
 
 ### Keyboard
 
-| Action | Keys |
-| --- | --- |
-| Move | `←` `→` or `A` `D` |
-| Jump | `Space`, `Z`, `↑` or `W` (hold for a higher jump) |
-| Fire (with Fire power) | `X` or `Shift` |
-| Levitate (with Levitate power) | Hold jump while in the air |
-| Pause / resume | `Esc` or `P` (the game also pauses automatically when the tab loses focus) |
+| Action | Player 1 | Player 2 |
+| --- | --- | --- |
+| Move | `←` `→` or `A` `D` | `J` `L` |
+| Jump (hold for higher) | `Space`, `Z`, `↑` or `W` | `I` |
+| Fire (with the Fire power) | `X` or `Shift` | `O` |
+| Down (noclip in dev mode) | `↓` or `S` | `K` |
+| Pause / resume | `Esc` or `P` (also pauses when the tab loses focus) | |
 
-These are the defaults. Rebind Left, Right, Jump, Fire and Down under **Options → Keyboard / Pad**.
-| Menus | `↑` `↓` to move, `←` `→` to change options, `Enter` to select, `Esc` to go back |
+Player 1's keys can be changed under **Options → Keyboard / Pad**. Players 3 and 4 use gamepads.
 
 ### Gamepad
 
-Any standard controller works (Xbox, PlayStation, Switch Pro and similar). It is detected automatically when you press a button.
+Any standard controller works (Xbox, PlayStation, Switch Pro and similar). **Controller 1 controls player 1 (together with the keyboard), controller 2 player 2, and so on.** In menus any controller can navigate.
 
 | Action | Control |
 | --- | --- |
 | Move | Left stick or D-pad |
-| Jump | `A` (bottom face button) or D-pad up |
+| Jump | `A` (bottom face button) |
 | Fire | `X` (left face button) |
 | Pause / resume | Start |
-| Menus | D-pad or stick to move, `A` to select, `B` to go back |
+| Menus | D-pad to move, `A` to select, `B` to go back |
 
 ### Mouse and touch
 
-- Menus work with hover and click or tap.
-- The **II** button on the touch pad pauses and resumes.
-- On touch devices an on-screen pad appears with **Left, Right, Pause, Fire and Jump**. You can force it on or off and resize it under **Options → Touch Controls**.
+Menus work with hover and click or tap, and the mouse wheel scrolls through menu items. On touch devices an on-screen pad (Left, Right, Pause, Fire, Jump) appears. Its size and visibility are under **Options → Touch controls**.
 
 ## Gameplay guide
 
 ### Goal
 
-Reach the flag at the end of each level. On boss levels, defeat the boss first.
+Reach the flag at the end of each level. On boss levels, defeat the boss first. **Score** = coins × 10 + stomps × 50 + a time bonus.
 
-**Score** = coins × 10 + stomps × 50 + a time bonus.
+### Worlds and levels
+
+Choose **Play → Level Select**, then a world, then a level. Levels unlock one at a time. Worlds are groups of 10 levels, and the last level of each world is a boss fight.
+
+| Level | Boss |
+| --- | --- |
+| 10 | Stone Warden |
+| 20 | Demon King |
+| 30 | Ice Golem |
+| 40 | Magma Beast |
+| 50 | Swamp Hydra |
+| 60 | Storm Lord |
+| 70 | Bone Colossus |
+| 80 | Void Titan |
+| 90 | Neon Overlord |
+| 100 | The Core |
+
+Levels 1 to 15 are hand-built (Grass Hills, Crystal Cave, Neon Citadel and others). Levels 16 to 100 reuse those themes with higher numbers (for example *Grass Hills 2*) and get more enemies, more spikes and longer layouts as you go. Generated levels are identical for every player.
 
 ### Difficulty
 
-| Level | Lives | Enemy speed | Jump forgiveness |
-| --- | :---: | :---: | :---: |
-| Easy | 5 | 0.7× | Generous |
-| Normal | 3 | 1.0× | Standard |
-| Hard | 2 | 1.4× | Tight |
-| Insane | 1 | 1.7× | Very tight |
-| Demon | 1 | 2.1× | None |
+| Level | Lives | Enemy speed | Jump forgiveness | Coin payout |
+| --- | :---: | :---: | :---: | :---: |
+| Easy | 5 | 0.7× | Generous | ×1 |
+| Normal | 3 | 1.0× | Standard | ×1 |
+| Hard | 2 | 1.4× | Tight | ×1.25 |
+| Insane | 1 | 1.7× | Very tight | ×1.5 |
+| Demon | 1 | 2.1× | None | ×2 |
+
+Upgrades add lives, and each extra co-op player adds one shared life.
 
 ### Heroes
 
@@ -117,6 +127,8 @@ Reach the flag at the end of each level. On boss levels, defeat the boss first.
 | Hopper | High jump |
 | Airy | Double jump |
 
+In co-op, player 2 and up automatically get the next heroes in the list, with a cap color per player (P1 red, P2 blue, P3 green, P4 yellow).
+
 ### Enemies
 
 | Enemy | Behavior |
@@ -124,301 +136,171 @@ Reach the flag at the end of each level. On boss levels, defeat the boss first.
 | Walker | Patrols and turns at ledges and walls |
 | Hopper | Hops while it walks |
 | Bat | Flies a wave pattern |
-| Spiny | Fast, and **cannot be stomped**, so jump over it |
-| Ghost | Drifts toward you and passes through walls |
-
-Stomp most enemies from above. Touching them from the side costs a life.
+| Spiny | Fast, and **cannot be stomped** |
+| Ghost | Drifts toward the nearest player and passes through walls |
 
 ### Superpowers
 
 | Orb | Power | Effect |
 | :---: | --- | --- |
-| **L** | Levitate | Hold jump in the air to float and rise. Falling is slowed. Lasts about 15 seconds. |
+| **L** | Levitate | Hold jump in the air to float and rise (about 15 s). You cannot float above the top of the level. |
 | **S** | Shield | Absorbs one hit (not pits). |
-| **F** | Fire | Shoot fireballs that defeat enemies and damage bosses. Lasts about 20 seconds. |
-| **\*** | Star | Invincible, faster, and enemies are destroyed on contact. Lasts about 8 seconds. |
+| **F** | Fire | Shoot fireballs (about 20 s). |
+| **\*** | Star | Invincible, faster, and enemies die on contact (about 8 s). |
 
-Orbs are marked with letters, so you never need to tell them apart by color. You can't levitate above the top of the level or past the side walls.
+Orbs carry letters, so colors never carry information alone.
 
 ### Checkpoints
 
-Every level (except the tutorial) has up to two checkpoint flags, placed on safe ground away from spikes. Touch one and it turns green. If you die you restart there with your coins and orb pickups intact, and you are briefly invulnerable. Boss levels have a checkpoint before the arena, not inside it.
-
-On **Insane** and **Demon** you only have one life, so a death is a game over. The game-over screen then offers **Continue from checkpoint**, which restores your starting lives at the last checkpoint you reached. **Retry level** starts from the beginning.
+Every level except the tutorial has up to two checkpoint flags on safe ground. After a death you restart at the last one with your coins and orb pickups kept. On **Insane** and **Demon** (one life), a game over offers **Continue from checkpoint**.
 
 ### Bosses
 
-| Level | Boss |
-| --- | --- |
-| 5 | Ice Golem |
-| 10 | Demon King |
-| 15 | Void Titan |
+Each boss roars in (a short intro in which it cannot hurt you), then chases you, jumps and fires projectiles. It gets faster as it takes damage. At **half health it becomes enraged**: it moves 25% faster, jumps more often and fires a spread shot (3 shots, 5 shots for later bosses). Stomp it or hit it with fireballs. In co-op its health is multiplied by 1 + 0.5 per extra player.
 
-Each boss has a short roaring intro during which it cannot hurt you. Bosses then chase you, jump and shoot projectiles, and speed up as they take damage. At **half health** a boss becomes **enraged**: its eyes turn yellow, it moves 25% faster, jumps more often and fires a three-way spread shot. Stomp them or hit them with fireballs. Shield and Fire orbs are placed in each arena.
+## Co-op and online multiplayer
 
-### Levels
+### Local co-op (1 to 4 players)
 
-1. Grass Hills
-2. Crystal Cave
-3. Neon Citadel
-4. Sunset Dunes
-5. Frozen Peaks (boss)
-6. Lava Forge
-7. Toxic Swamp
-8. Sky Islands
-9. Haunted Keep
-10. Demon Gate (boss)
-11. Crimson Canyon
-12. Cosmic Bridge
-13. Abyss Depths
-14. Storm Peaks
-15. Void Citadel (boss)
+Set the number of players under **Multiplayer** or **Play → Game Setup**, then play any level. Rules:
 
-New players should start with **Play → Tutorial**.
+- Lives are **shared**. A death costs one life and the player respawns next to a teammate. If every player is down, the level restarts from the last checkpoint.
+- A player who runs out of lives is out for the rest of the attempt. When all players are out it is game over.
+- The camera follows the group. A player who is left far behind rejoins automatically.
+- Coins, stomps and score are shared. Any player reaching the flag clears the level.
 
-## Shop: outfits and upgrades
+### Online rooms (up to 4 players)
 
-Coins you collect are **banked when you clear a level**. Dying loses that attempt's coins, and the tutorial pays nothing. Harder difficulties pay more:
+1. Run the server (`npm start`, or deploy it, see below).
+2. Open the game from that server (or add `?server=wss://<your-server>` to the game's address, or set it under **Multiplayer → Online → Server**).
+3. One player picks **Create room** and shares the 4-character code. Others pick **Join room** and type it.
+4. The host chooses the level and starts the game.
 
-| Difficulty | Easy | Normal | Hard | Insane | Demon |
-| --- | :---: | :---: | :---: | :---: | :---: |
-| Coin payout | ×1 | ×1 | ×1.25 | ×1.5 | ×2 |
+How it works: the **host's browser runs the whole game**. Guests send their button presses to the host and draw the state the host sends back (about 20 updates per second). The server only relays messages between the people in a room, so it stays tiny. Consequences:
 
-Open the shop from the title screen. Your wallet, outfits and upgrades are saved with your progress.
+- The host has no lag; guests feel the round-trip time to the host.
+- The host can cheat (there is no anti-cheat), so play with friends.
+- Pausing as host pauses everyone. If the host leaves, the room closes.
+- Daily challenge and tutorial are single-player.
 
-### Outfits (cosmetic)
+### Running the server
 
-Outfits work with every hero and change how your character looks, including in the shop preview.
+```bash
+npm install
+npm start                     # PORT=8080 by default
+PORT=3000 npm start           # another port
+ALLOWED_ORIGINS=https://you.github.io npm start   # only accept connections from these pages
+```
 
-| Outfit | Price | Look |
-| --- | :---: | --- |
-| Classic | Free | Your hero's own colors |
-| Ninja | 30 | Dark suit, mask and red headband |
-| Knight | 60 | Steel armor with a red plume |
-| Wizard | 100 | Purple robe and a pointed star hat |
-| Astronaut | 150 | White helmet with a glass visor |
-| Royal | 220 | Gold crown |
-| Ghost | 300 | Translucent white |
+The server also serves the game, so one deployment covers both. `GET /health` returns `ok`.
 
-### Upgrades (permanent)
+**Deploying:** any host that can run Node 18+ or Docker works (Render, Railway, Fly.io, a VPS). Use `npm start` as the start command, or build the included `Dockerfile`. Online play from an `https://` page needs `wss://`, which these hosts provide automatically.
 
-The price of each level is the base price × the level you are buying (for example Extra Life costs 50, then 100, then 150).
+**GitHub Pages note:** Pages only serves static files, so it cannot run the server. Host the server elsewhere and open the game with `https://<you>.github.io/<repo>/?server=wss://<your-server.example>`.
 
-| Upgrade | Max level | Base price | Effect |
-| --- | :---: | :---: | --- |
-| Extra Life | 3 | 50 | +1 life in every level |
-| Super Jump | 3 | 40 | +4% jump height per level |
-| Power Time | 3 | 60 | +25% duration for Levitate, Fire and Star per level |
-| Coin Magnet | 3 | 50 | Pulls coins toward you from 28, 44 or 60 pixels |
-| Start Shield | 1 | 120 | Every level starts with a Shield |
+Safety limits: messages over 16 KB are dropped, each client is rate limited, malformed messages are ignored, and rooms disappear when empty. The server stores nothing.
 
-Upgrades apply on every difficulty. **Options → Save Data → Reset Save** clears the wallet, outfits and upgrades along with your level progress.
+## Shop and progression
 
-## Progression: achievements, daily challenge, best times
+Coins are **banked when you clear a level** (the tutorial pays nothing). A death loses that attempt's coins.
 
-### Achievements
+| Outfit | Price | | Upgrade | Max | Base price | Effect |
+| --- | :---: | --- | --- | :---: | :---: | --- |
+| Classic | Free | | Extra Life | 3 | 50 | +1 life in every level |
+| Ninja | 30 | | Super Jump | 3 | 40 | +4% jump height per level |
+| Knight | 60 | | Power Time | 3 | 60 | +25% power-up time per level |
+| Wizard | 100 | | Coin Magnet | 3 | 50 | Pulls coins from 28, 44 or 60 px |
+| Astronaut | 150 | | Start Shield | 1 | 120 | Every level starts with a Shield |
+| Royal | 220 | | | | | |
+| Ghost | 300 | | | | | |
 
-Open **Play → Achievements**. There are 10 badges:
+An upgrade level costs the base price × the level you are buying. Outfits are cosmetic and apply to player 1.
 
-| Achievement | How to earn it |
-| --- | --- |
-| First Steps | Clear level 1 |
-| Boss Slayer | Defeat a boss |
-| Untouchable | Clear a level without dying |
-| Stomper | Stomp 50 enemies in total (counted on level clears) |
-| Coin Hoarder | Earn 500 coins in total |
-| Sky High | Collect a Levitate orb |
-| Fashionista | Own every outfit |
-| Demon Hunter | Clear a level on Demon |
-| Completionist | Clear all 15 levels |
-| Daily Grind | Clear the daily challenge |
+**Achievements** (Extras → Achievements): First Steps, Boss Slayer, Untouchable, Stomper, Coin Hoarder, Sky High, Fashionista, Demon Hunter, Completionist (all 100 levels) and Daily Grind. The **daily challenge** is a generated level seeded by today's date, paying double coins on the first clear. Each level remembers your **best time** and shows **NEW RECORD!**.
 
-### Daily challenge
+## 3D view
 
-**Play → Daily** loads a generated level whose layout is fixed by today's date, so everyone gets the same level on the same day (in their local time zone). The first clear each day pays **double coins** and unlocks Daily Grind. Replays pay nothing but still count for your best score.
-
-### Best times
-
-Every level remembers your fastest clear. The clear screen shows **NEW RECORD!** when you beat it.
-
-## Install and play offline
-
-Pixel Hopper is a progressive web app. When it is served over **HTTPS** (for example GitHub Pages), browsers can install it and it keeps working offline:
-
-- **Desktop Chrome or Edge:** click the install icon in the address bar.
-- **Android Chrome:** menu → *Install app*.
-- **iPhone or iPad Safari:** Share → *Add to Home Screen*.
-
-The pixel font is bundled inside `pixel-hopper.html`, so the game looks the same offline. A service worker caches the game and updates it in the background the next time you are online. Opening the file directly from disk (`file://`) still works, but without installation or offline caching.
+The game renders in real-time 3D with Three.js (r128, bundled in the file): extruded blocks, lighting, soft shadows, parallax hills, clouds and stars. The simulation is still the same precise 2D platformer, so controls feel identical. Turn it off under **Options → Display → 3D view**. If WebGL is unavailable, the context is lost, or a rendering error occurs, the game switches to the 2D renderer automatically and keeps running.
 
 ## Options and accessibility
 
-The title screen is organised into **Play**, **Shop**, **Game Setup**, **Options** and **About**.
+The title screen has **Play**, **Multiplayer**, **Shop**, **Options** and **Extras**. Each screen shows a one-line description of the highlighted item and the keys to use, and the game remembers where you were in each menu.
 
 | Menu | Settings |
 | --- | --- |
 | **Audio** | Volume, music, sound effects |
-| **Display** | CRT filter, vignette, fullscreen |
-| **Accessibility** | Color mode (Off, Protan, Deutan, Tritan, High-contrast), enemy outlines, screen shake, vibration |
-| **Keyboard / Pad** | Rebind Left, Right, Jump, Fire and Down (conflicting keys are refused, `Esc` cancels), reset to defaults |
+| **Display** | 3D view, CRT filter, vignette, fullscreen |
+| **Accessibility** | Color mode (Off, Protan, Deutan, Tritan, High-contrast), enemy outlines, screen shake (off by default when your system asks for reduced motion), vibration |
+| **Keyboard / Pad** | Rebind player 1's keys (conflicts are refused) |
 | **Touch controls** | Touch pad (Auto, On, Off), button size, vibration |
-| **Save data** | Reset save (asks for confirmation; also clears coins, outfits and upgrades) |
-| **Developer** | Locked by default (see below) |
+| **Save data** | Reset save (clears progress, coins, outfits, upgrades, achievements) |
 
-The Protan, Deutan and Tritan modes apply a color-shift filter to the whole game canvas. They are an aid, not a medical-grade correction.
+The color modes are standard color-shift filters, not medical-grade corrections.
+
+## Install and play offline
+
+Served over **HTTPS** (for example GitHub Pages) the game is a progressive web app: install it from the browser's address bar (desktop), the menu (Android Chrome) or Share → Add to Home Screen (iOS). The pixel font and Three.js are bundled in `pixel-hopper.html`, so it looks the same offline. A service worker updates the cache in the background; bump `CACHE` in `sw.js` for every release.
 
 ## Developer mode
 
-Developer mode is hidden behind a **20-digit code**. Open **Options → Developer** (or press `` ` `` on a menu screen) and enter the code with the keyboard or the on-screen keypad. Once unlocked, it stays unlocked until you choose **Lock Developer**.
+Hidden behind a **20-digit code** (Options → Developer, or press `` ` `` on a menu screen). Once unlocked: hitboxes (`H`), god mode (`G`), noclip fly (`F`), next/previous level (`N`/`B`), restart (`R`), time scale (`[` `]`), powers (`1`–`4`), kill the boss (`K`), on-screen event log (`L`), every level unlocked and +1000 coins. The code is not stored in the source, only its hash (`DH`). To set your own, hash it with the `hs` function from the script (`PH.hs('your20digits')` in the console) and replace `DH`.
 
-Unlocked features:
-
-| Key | Action |
-| --- | --- |
-| `` ` `` | Toggle developer mode |
-| `G` | God mode |
-| `H` | Show hitboxes |
-| `F` | Noclip fly |
-| `N` / `B` | Next / previous level |
-| `R` | Restart level |
-| `[` / `]` | Slow down / speed up time |
-| `1`–`4` | Grant Levitate, Shield, Fire, Star |
-| `K` | Defeat the boss instantly |
-| `L` | Show the recent event log on screen |
-
-It also shows a debug panel (version, FPS, position, velocity) and unlocks every level in Level Select. The Developer menu also has a **+1000 coins** button for testing the shop.
-
-### Setting your own code (maintainers)
-
-The code is not stored in the source. Only its hash is, in the `DH` constant near the top of the script. To change the code, compute the hash with the same function used by the game and replace `DH`:
-
-```js
-// run in a browser console or Node, with the game's `hs` function
-const hs = s => { let a=3735928559,b=1103547991; for(let i=0;i<s.length;i++){const k=s.charCodeAt(i);a=Math.imul(a^k,2654435761);b=Math.imul(b^k,1597334677)} a=Math.imul(a^a>>>16,2246822507)^Math.imul(b^b>>>13,3266489909); b=Math.imul(b^b>>>16,2246822507)^Math.imul(a^a>>>13,3266489909); return 4294967296*(2097151&b)+(a>>>0) };
-console.log(hs('your20digitcodehere'));
-```
-
-> This is a client-side check. It keeps casual players out, but anyone who reads and edits the source can bypass it.
+> This is a client-side check. It keeps casual players out; anyone who edits the file can bypass it.
 
 ## Project structure
 
 ```
 pixel-hopper/
-├── pixel-hopper.html          # the whole game: HTML, CSS, JavaScript and the bundled font
-├── manifest.webmanifest       # web app manifest (installable app)
-├── sw.js                      # service worker (offline play)
-├── icon.svg, icon-*.png       # app icons
-├── tests/
-│   └── run-tests.js           # headless test runner (Node, no dependencies)
-├── .github/workflows/
-│   ├── test.yml               # runs the tests on every push and pull request
-│   └── release.yml            # runs the tests and publishes a GitHub release for v* tags
+├── pixel-hopper.html          # the whole game: HTML, CSS, JavaScript, bundled font and Three.js
+├── server/server.js           # online relay server + static hosting (needs `ws`)
+├── package.json, Dockerfile   # run or deploy the server
+├── manifest.webmanifest, sw.js, icon*.svg/png   # installable offline app
+├── tests/run-tests.js         # headless test runner
+├── .github/workflows/         # test.yml (every push) and release.yml (v* tags)
 └── README.md
 ```
 
-The script inside `pixel-hopper.html` is organised into labelled sections, in this order:
-
-| Section | Contents |
-| --- | --- |
-| `CONFIG` | Canvas size, difficulties, heroes, outfits, upgrades, bosses, power-ups, achievements, key bindings, color filters, secret-code hash |
-| `LEVELS` | Hand-built levels, the seeded level generator, the tutorial |
-| `SAVE + GAME STATE` | Settings, progress, global state |
-| `DEBUG` | Event log, invariant checks, error recovery, save sanitising |
-| `AUDIO` | Sound effects and music |
-| `PHYSICS + GAME RULES` | Collision, damage, bosses, level loading, scoring |
-| `UPDATE` | The fixed 60 Hz `step()` function |
-| `MENUS` | Every menu screen as data |
-| `RENDERING` | All drawing code |
-| `INPUT` | Keyboard, pointer and touch handlers |
-| `MAIN LOOP` | Frame loop with error recovery |
-| `DEBUG API` | The read-only `PH` object used by the console and the tests |
-
-Under the hood:
-
-- **Rendering:** a 320×192 `<canvas>` scaled up with `image-rendering: pixelated`. Everything is drawn with rectangles and gradients; there are no image assets.
-- **Game loop:** fixed 60 Hz timestep with an accumulator, so physics is frame-rate independent.
-- **Levels:** a few are hand-authored from tile data. The rest come from a seeded generator, so they are identical on every playthrough.
-- **Audio:** oscillator-based sound effects and a looping chiptune melody (Web Audio).
-- **Saves:** `localStorage` under the key `pxh1`.
+The game script is organised in labelled sections: `CONFIG`, `LEVELS`, `SAVE + GAME STATE`, `DEBUG`, `AUDIO`, `PHYSICS + GAME RULES`, `UPDATE`, `MENUS`, `RENDERING`, `INPUT`, `ONLINE`, `3D RENDERER`, `MAIN LOOP`, `DEBUG API`.
 
 ## Debugging and tests
 
-### In the browser
+**In the browser console:** `PH.log()` (last 200 events), `PH.state()`, `PH.inv()` (invariant check), `PH.errors()`. Developer mode shows the log with `L`.
 
-Open the developer console and use the read-only `PH` object:
+**Automated tests:** `npm install` then `npm test` (Node 18+). Without `npm install` the 3D and online tests are skipped. The tests are organised from the deepest layer to the surface:
 
-| Command | What it does |
+| Layer | Checks |
 | --- | --- |
-| `PH.log()` | The last 200 game events (level loads, deaths, power-ups, boss hits, errors) |
-| `PH.state()` | A snapshot of the scene, level, lives, player position and boss health |
-| `PH.inv()` | Checks game invariants (NaN values, player out of bounds or inside a wall) and returns any problems |
-| `PH.errors()` | The last caught runtime error |
+| Math and data | Level generation is deterministic, 100 unique level names, bosses exactly on every 10th level, hash and `T()` boundary safety |
+| Physics | Property test: random moves of player-, enemy- and boss-sized boxes never end embedded in a wall, never move farther than their velocity and set the ground flag correctly |
+| Level design | Gaps ≤ 3 tiles, platforms/coins/orbs reachable, no spawns on spikes, checkpoints safe, a **pathfinding solver** proves a jump path from spawn to flag in every level (checked against deliberately broken levels) |
+| Rules | Economy, shop, upgrades, achievements, daily level, checkpoints, boss intro and phase 2, lives |
+| Co-op | 4 players, independent controls, shared lives, respawn, rubber band, boss scaling |
+| Input | Remapping, gamepads 1–4, 120,000 random key/pointer events, corrupted saves, render-error recovery |
+| 3D | Real Three.js scene graph for all 100 levels (with a stand-in renderer): camera lines up with the 2D layout, fallback to 2D, fuzzing |
+| Network | Real server and 4 game instances: rooms, join/leave, full room, input and snapshot sync, coins, shared lives, level clear, host leaving, malformed and oversized messages, path traversal |
+| App | Manifest, icons, service worker, bundled font, workflows |
 
-With developer mode unlocked, press `L` in a level to show the event log on screen. Invariants are also checked automatically in developer mode.
+The runner exits non-zero on failure and `test.yml` runs it on Node 18, 20 and 22. The solver proves a jump path exists between platforms; it ignores enemies and ceilings, so it shows a level can be finished in principle, not that every enemy placement is fair. A stand-in renderer cannot show how the 3D view looks; check that by eye.
 
-### Automated tests
+## Hosting and releases
 
-```bash
-node tests/run-tests.js              # tests ../pixel-hopper.html
-node tests/run-tests.js path/to.html # tests another build
-```
-
-Requires Node 18 or newer. The runner loads the game headlessly with a fake canvas and checks:
-
-1. **Level validation:** gaps are at most 3 tiles, platforms, coins and orbs are within jump reach, nothing spawns inside walls or on spikes, spawn points and flags sit on solid ground.
-2. **1,000 randomised play sessions** across all levels, difficulties and heroes, checking invariants every frame.
-3. **Scripted boss fights** on all three boss levels, including clearing the level afterwards.
-4. **Every menu item** is activated and every screen is drawn.
-5. **The secret code:** wrong codes are rejected and the right one is accepted.
-6. **120,000 random keyboard and pointer events**, with developer mode locked and unlocked.
-7. **Corrupted save data** is repaired.
-8. **Render errors** do not stop the main loop.
-9. **Every hero on every difficulty** can clear a 3-tile gap with a last-moment jump.
-10. **Economy and shop:** coin payouts per difficulty, no payout in the tutorial, purchase rules, price tables, every upgrade's effect, and reset save.
-12. **Static reachability solver:** every level (including the daily one) must have a chain of jumps, limited by the real jump physics, from the spawn to the flag. The solver is checked against deliberately broken levels so it cannot pass by accident.
-13. **Checkpoints** on every difficulty: reached, respawn with progress kept, and continue after a game over.
-14. **Bosses:** the roaring intro, and the phase 2 transition.
-15. **Progression:** achievements, best times, and the daily level (deterministic, pays double once).
-16. **Key remapping and gamepad:** conflicts, cancel, reset, menus by pad, movement by pad, disconnect.
-17. **App files:** manifest, icons, service worker, bundled font and workflows exist and are valid.
-18. **Save repair** for key bindings, achievements and stats.
-11. **Noclip safety:** leaving noclip inside a platform pushes the player out instead of trapping them.
-
-The runner exits with a non-zero code on failure, and `.github/workflows/test.yml` runs it on Node 18, 20 and 22 for every push. The solver proves a platform-to-platform jump path exists; it deliberately ignores enemies and ceilings, so it shows each level can be finished in principle, not that every enemy placement is fair. Please open an issue if a level feels unfair.
-
-## Hosting on GitHub Pages
-
-1. Rename `pixel-hopper.html` to `index.html` (or keep the name and link to it directly).
-2. Push to GitHub.
-3. Go to **Settings → Pages**, choose your branch and the `/ (root)` folder, and save.
-4. Your game will be live at `https://aylanarciso0721-lang.github.io/Pixel-Hopper/`.
+- **Static (GitHub Pages):** rename `pixel-hopper.html` to `index.html`, push, then Settings → Pages. Online play needs a separate server (see above).
+- **Release:** run the tests, commit, then `git tag -a v2.0 -m "v2.0" && git push origin v2.0`. The release workflow reruns the tests and publishes a GitHub release with the game files attached.
 
 ## Changelog
 
 | Version | Highlights |
 | --- | --- |
-| **1.2** | Pro update: checkpoints in every level plus continue-from-checkpoint after a game over (helps Insane and Demon), boss roaring intros and an enraged phase 2 with a spread shot, 10 achievements, a daily challenge, best-time records, gamepad support, key remapping, web app manifest, service worker, bundled font, and GitHub Actions for tests and releases. The tests gained a pathfinding solver and now have 18 groups |
-| 1.1 | Shop update: coins now bank on level clear and can be spent on 6 outfits and 5 permanent upgrades (extra lives, jump height, power-up time, coin magnet, start shield). Also fixed: leaving developer noclip inside a wall could trap the player, and save repair now covers shop data. 11 test groups |
-| 1.02 | Deep bug-fix and code-organisation update: **Demon difficulty could not jump** (fixed), main loop could freeze permanently after an error (now recovers), corrupted saves could crash startup (now repaired), screen shake and toast timing depended on monitor refresh rate, long level names overlapped the HUD, two unreachable platforms in Neon Citadel and nine enemies placed on spikes in generated levels, the developer level-skip could enter the tutorial. Code is now split into labelled sections with a `PH` debug API, an event log and a test runner |
-| 1.01 | Bug fixes: Developer screen could return to a stale menu (even a paused game), holding Enter repeated menu actions, `P` could not resume from pause, the touch pause button could not resume, fireballs could fire on resume from pause, the game kept running in a background tab, and the level-select scroll arrow overlapped the title |
-| 1.0 | 15 levels, 3 bosses, 4 superpowers including levitation, code-locked developer mode, colorblind and touch accessibility, reorganised menus, new sound effects |
-| 0.9 beta | Tutorial level with hint signs, lighting and shadows, reset save |
-| 0.8 beta | 16×16 sprites, 10 levels, 5 enemy types, 4 heroes, Insane and Demon difficulties |
-| 0.7 beta | Version labels and About screen |
-| 0.1 | First build: 3 levels, settings, developer mode |
+| **2.0** | 3D view; 4-player local co-op; online rooms with a relay server; 100 levels with a boss every 10th level (10 bosses); new menu structure with descriptions, remembered selection and world select; deeper tests (physics property tests, solver for all levels, 3D and network tests); collision fixes: tall entities could start overlapping walls undetected, and an already-embedded entity could be teleported a full tile sideways |
+| 1.2 | Checkpoints, boss phases, achievements, daily challenge, best times, gamepad, remapping, offline app, CI |
+| 1.1 | Shop, outfits, upgrades, wallet |
+| 1.02 | Demon jump fix, error recovery, safer saves, test runner |
+| 1.0 | 15 levels, 3 bosses, superpowers, locked developer mode, accessibility |
 
 ## Contributing
 
-Issues and pull requests are welcome. Because the game is a single file, please:
-
-- keep it dependency-free,
-- test in at least one desktop browser and one touch device (or emulation),
-- describe gameplay changes in your PR (new levels, enemies, powers).
-
-Ideas for contributions: more hand-authored levels, new enemy types, checkpoints, a level editor, control remapping.
+Issues and pull requests are welcome. Keep the game file dependency-free at runtime, run `npm test` before opening a PR, and describe gameplay changes. Ideas: hand-built levels for worlds 2 to 10, new enemy types, a level editor, reconnecting to a room, spectators.
 
 ## License
 
-Add a license of your choice (for example [MIT](https://choosealicense.com/licenses/mit/)) and update this section.
-
-The pixel font is [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) by CodeMan38, licensed under the SIL Open Font License.
+Add a license of your choice (for example [MIT](https://choosealicense.com/licenses/mit/)). Three.js is MIT licensed. The pixel font [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) by CodeMan38 is licensed under the SIL Open Font License.
