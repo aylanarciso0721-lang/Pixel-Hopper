@@ -1,6 +1,6 @@
 // Pixel Hopper service worker: offline play with stale-while-revalidate.
 // Bump CACHE on every release so players receive the new version.
-const CACHE = 'pixel-hopper-v1.2';
+const CACHE = 'pixel-hopper-v2.0';
 const FILES = ['./', './pixel-hopper.html', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
