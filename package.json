@@ -1,0 +1,13 @@
+{
+  "name": "pixel-hopper",
+  "version": "2.0.0",
+  "description": "Pixel Hopper: a retro 2D/3D platformer with co-op and online multiplayer",
+  "private": true,
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "node tests/run-tests.js"
+  },
+  "dependencies": { "ws": "^8.18.0" },
+  "devDependencies": { "three": "0.128.0" },
+  "engines": { "node": ">=18" }
+}
